@@ -1,4 +1,5 @@
-import { FC } from 'react';
+import {useCallback,FC} from 'react';
+import {useNavigate} from 'react-router-dom';
 import classes from './BlobComponent.module.less';
 import { Blob } from "../../server/models/blob";
 import tinycolor from "tinycolor2";
@@ -9,13 +10,17 @@ const BlobComponent: FC<{ blob: Blob }> = ({ blob }) => {
     return Math.floor(Math.random()*(max-min+1)+min);
   }
 
+  const navigate = useNavigate();
+  const handleOnClick = useCallback(() => navigate(`/blobs/${blob.id}`, {replace: true}), [navigate]);
+
   const borderRadius1 = `${random(30, 70)}% ${random(30, 70)}% ${random(30, 70)}% ${random(30, 70)}%`;
   const borderRadius2 = `${random(30, 70)}% ${random(30, 70)}% ${random(30, 70)}% ${random(30, 70)}%`;
   const position = ['flex-start', 'flex-end', 'center'][random(0, 2)];
   
   return (
-    <div className={classes.container} style={{
+    <div onClick={handleOnClick} className={classes.container} style={{
       alignSelf: position,
+      cursor:'pointer'
     }}>
       <Tooltip title={blob.name}>
         <div className={classes.blob} style={{

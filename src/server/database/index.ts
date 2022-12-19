@@ -13,25 +13,50 @@ function init(): void {
   });
 }
 
+function getNextId(): string {
+  if (_blobs.length === 0) {
+    return '00001';
+  }
+
+  const latestId = _blobs[_blobs.length - 1].id;
+  const latestIdNumber = parseInt(latestId, 10);
+  const nextIdNumber = latestIdNumber + 1;
+  const nextId = nextIdNumber.toString().padStart(5, '0');
+  return nextId;
+}
+
 function list(): Blob[] {
   return _blobs;
 }
 
 function get(id: string): Blob | null {
-  // TODO: Get blob by id
-  return null;
+  const blob = _blobs.find((b) => b.id === id);
+  return blob || null;
 }
 
 function add(blob: Blob): void {
-  // TODO: Add new blob to database
+  blob.id = getNextId();
+  blob.createdAt = new Date();
+  blob.updatedAt = new Date();
+  _blobs.push(blob);
 }
 
 function remove(id: string): void {
-  // TODO: Remove a blob from database
+  _blobs = _blobs.filter((blob) => blob.id !== id);
 }
 
 function update(blob: Blob): void {
-  // TODO: Update a blob
+  _blobs = _blobs.map((b) => {
+    if (b.id === blob.id) {
+      return {
+        ...b,
+        ...blob,
+        updatedAt: new Date()
+      };
+    } else {
+      return b;
+    }
+  });
 }
 
 export default { 
